@@ -1,10 +1,9 @@
 define(function () {
-    // A new instance of the common module will be loaded for each context
-    console.log("[COMMON] Module loaded");
+    var instance = Math.floor(Math.random() * 0x10000000).toString(16);
 
     return {
-        beep: function () {
-            console.log("[COMMON] BEEP!");
+        getInstance: function () {
+            return instance;
         }
     };
 });

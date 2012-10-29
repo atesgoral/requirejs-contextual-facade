@@ -1,4 +1,4 @@
-define([ "sandbox" ], function (sandbox) {
+define([ "common", "sandbox" ], function (common, sandbox) {
 
     function Facade(name) {
         var prefix = "[" + name.toUpperCase() + "-SPECIFIC] ";
@@ -10,18 +10,25 @@ define([ "sandbox" ], function (sandbox) {
 
     Facade.prototype = sandbox; // Get lazy
 
+    console.log("[MAIN] Common: " + common.getInstance());
+
     var modules = [ "a", "b" ];
 
     modules.forEach(function (name) {
-        // Define new context
+        var sandboxName = "sandbox$" + name,
+            map = {};
+
+        define(sandboxName, new Facade(name));
+
+        map[name] = {
+            sandbox: sandboxName
+        };
+
         var req = requirejs.config({
-            context: "context_" + name
+            context: "module",
+            map: map
         });
 
-        // Will be defined in the context
-        define("sandbox", new Facade(name));
-
-        // Load the module within context
         req([ name ], function (module) {
             module.initialize();
         });
